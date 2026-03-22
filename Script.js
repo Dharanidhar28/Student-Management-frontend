@@ -61,6 +61,11 @@ table.innerHTML += `
 
 <td>
 
+<button class="btn btn-warning btn-sm"
+onclick="editStudent(${student.id})">
+Edit
+</button>
+
 <button class="btn btn-danger btn-sm"
 onclick="deleteStudent(${student.id})">
 
@@ -122,6 +127,53 @@ localStorage.removeItem("token");
 
 window.location.href="login.html";
 }
+
+async function editStudent(id){
+
+const students = await apiRequest(`/students/${id}`);
+
+document.getElementById("name").value = students.name;
+document.getElementById("email").value = students.email;
+document.getElementById("age").value = students.age;
+document.getElementById("course").value = students.course;
+
+document.getElementById("saveBtn").onclick = () => updateStudent(id);
+
+}
+
+async function updateStudent(id){
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const age = parseInt(document.getElementById("age").value);
+const course = document.getElementById("course").value;
+
+await apiRequest(`/students/${id}`,{
+
+method:"PUT",
+
+body: JSON.stringify({
+name,
+email,
+age,
+course
+})
+
+});
+const saveBtn = document.getElementById("saveBtn");
+saveBtn.innerText = "Add Student";
+saveBtn.onclick = addStudent;
+
+
+loadStudents();
+
+}
+
+window.addStudent = addStudent;
+window.deleteStudent = deleteStudent;
+window.editStudent = editStudent;
+window.updateStudent = updateStudent;
+
 
 loadStudents();
 
